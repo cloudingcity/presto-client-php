@@ -1,0 +1,36 @@
+{
+    "name": "clouding/presto",
+    "description": "A simple library for presto http client.",
+    "keywords": ["presto", "http", "library"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Clouding",
+            "email": "ghost0436@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.2",
+        "guzzlehttp/guzzle": "~6.0",
+        "tightenco/collect": "^5.7",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.2",
+        "phpunit/phpunit": "^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Clouding\\Presto\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Clouding\\Presto\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
