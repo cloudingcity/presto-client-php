@@ -11,7 +11,7 @@ class ConnectionTest extends TestCase
 {
     public function testDefaultConfig()
     {
-        $connection =  new Connection();
+        $connection = new Connection();
 
         $this->assertSame(Connection::DEFAULT_USER, $connection->getUser());
         $this->assertSame(Connection::DEFAULT_HOST, $connection->getHost());
