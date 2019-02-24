@@ -63,4 +63,14 @@ class Manager
 
         return $this->instances[$name];
     }
+
+    /**
+     * Get all connections.
+     *
+     * @return array
+     */
+    public function getConnections(): array
+    {
+        return $this->connections;
+    }
 }

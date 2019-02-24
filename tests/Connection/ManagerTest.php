@@ -38,4 +38,19 @@ class ManagerTest extends TestCase
         $this->assertInstanceOf(Connection::class, $default);
         $this->assertSame($default, $default2);
     }
+
+    public function testGetConnections()
+    {
+        $connections = [
+            'default' => [
+                'fruit' => 'apple',
+            ],
+            'super' => [
+                'fruit' => 'banana',
+            ]
+        ];
+        $manager = new Manager($connections);
+
+        $this->assertSame($connections, $manager->getConnections());
+    }
 }
