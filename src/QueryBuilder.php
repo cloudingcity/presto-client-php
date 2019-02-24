@@ -56,6 +56,18 @@ class QueryBuilder
     }
 
     /**
+     * Execute the query statement with assoc column.
+     *
+     * @return \Tightenco\Collect\Support\Collection
+     */
+    public function getAssoc(): Collection
+    {
+        $this->processor->setCollectAssoc();
+
+        return $this->processor->execute($this->toSql());
+    }
+
+    /**
      * Get raw query statement.
      *
      * @return string

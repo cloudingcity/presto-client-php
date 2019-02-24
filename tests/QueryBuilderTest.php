@@ -39,4 +39,20 @@ class QueryBuilderTest extends TestCase
         $this->assertInstanceOf(Collection::class, $rows);
         $this->assertEquals([1, 2, 3], $rows->toArray());
     }
+
+    public function testGetAssoc()
+    {
+        $mockProcessor = Mockery::mock(Processor::class);
+        $mockProcessor->shouldReceive('setCollectAssoc')
+            ->once();
+        $mockProcessor->shouldReceive('execute')
+            ->once()
+            ->andReturn(collect([1, 2, 3]));
+
+        $builder = new QueryBuilder($mockProcessor);
+        $rows = $builder->getAssoc();
+
+        $this->assertInstanceOf(Collection::class, $rows);
+        $this->assertEquals([1, 2, 3], $rows->toArray());
+    }
 }

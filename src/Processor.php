@@ -55,6 +55,13 @@ class Processor
     protected $nextUri = '';
 
     /**
+     * Check collect is associative.
+     *
+     * @var bool
+     */
+    protected $isCollectAssoc = false;
+
+    /**
      * Collect response data.
      *
      * @var \Tightenco\Collect\Support\Collection
@@ -164,6 +171,14 @@ class Processor
     }
 
     /**
+     * Set collect associative.
+     */
+    public function setCollectAssoc()
+    {
+        $this->isCollectAssoc = true;
+    }
+
+    /**
      * Collect data.
      *
      * @param object $contents
@@ -174,7 +189,17 @@ class Processor
             return;
         }
 
-        $this->collection = $this->collection->merge($contents->data);
+        $data = $contents->data;
+
+        if ($this->isCollectAssoc) {
+            $columns = collect($contents->columns)->pluck('name');
+
+            $data = collect($data)->map(function (array $row) use ($columns) {
+                return $columns->combine($row)->toArray();
+            });
+        }
+
+        $this->collection = $this->collection->merge($data);
     }
 
     /**

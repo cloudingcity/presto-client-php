@@ -38,6 +38,9 @@ Using query and get a [collection](https://github.com/tightenco/collect)
 ```php
 $posts = Presto::query('select * from posts')->get();
 var_dump($posts->toArray()); // [[1, 'Good pracetice'], [2, 'Make code cleaner']]
+
+$posts = Presto::query('select * from posts')->getAssoc();
+var_dump($posts->toArray()); // [['id' => 1, 'title' => 'Good pracetice'], ['id' => 2, 'title' => 'Make code cleaner']]
 ```
 
 ## Usage
