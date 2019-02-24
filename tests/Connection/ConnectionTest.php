@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Clouding\Presto\Tests\Connection;
 
 use Clouding\Presto\Connection\Connection;
+use Clouding\Presto\QueryBuilder;
 use PHPUnit\Framework\TestCase;
 
 class ConnectionTest extends TestCase
@@ -34,5 +35,13 @@ class ConnectionTest extends TestCase
         $this->assertSame($config['host'], $connection->getHost());
         $this->assertSame($config['schema'], $connection->getSchema());
         $this->assertSame($config['catalog'], $connection->getCatalog());
+    }
+
+    public function testQuery()
+    {
+        $connection = new Connection();
+        $builder = $connection->query('I am handsome');
+
+        $this->assertInstanceOf(QueryBuilder::class, $builder);
     }
 }
