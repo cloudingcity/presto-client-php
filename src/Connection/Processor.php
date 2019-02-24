@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Clouding\Presto\Connection;
 
-use Clouding\Presto\Contracts\ProcessorInterface;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
-use Tightenco\Collect\Support\Collection;
 
-class Processor implements ProcessorInterface
+class Processor
 {
     /**
      * The statement uri.
@@ -65,11 +63,11 @@ class Processor implements ProcessorInterface
      * Handle connection query.
      *
      * @param  string  $statement
-     * @return \Tightenco\Collect\Support\Collection
+     * @return array
      *
      * @throws \Clouding\Presto\Exceptions\ResponseResolveException
      */
-    public function handle(string $statement): Collection
+    public function handle(string $statement): array
     {
         $resolver = new ResponseResolver();
 
@@ -83,7 +81,7 @@ class Processor implements ProcessorInterface
             );
         }
 
-        return $resolver->getData();
+        return $resolver->getCollection();
     }
 
     /**

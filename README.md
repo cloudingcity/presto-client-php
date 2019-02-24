@@ -33,10 +33,10 @@ $presto->addConnection([
 $presto->setAsGlobal();
 ```
 
-2. Using raw query and get rows with [collection](https://github.com/tightenco/collect)
+2. Using raw query 
 ```php
 $posts = Presto::query('select * from posts')->get();
-var_dump($posts->toArray()); // [[1, 'Good pracetice'], [2, 'Make code cleaner']]
+var_dump($posts); // [[1, 'Good pracetice'], [2, 'Make code cleaner']]
 ```
 
 ## Running Tests

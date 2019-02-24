@@ -9,7 +9,6 @@ use Clouding\Presto\Exceptions\ResponseResolveException;
 use GuzzleHttp\Psr7\Response;
 use function GuzzleHttp\Psr7\stream_for;
 use PHPUnit\Framework\TestCase;
-use Tightenco\Collect\Support\Collection;
 
 class ResponseResolverTest extends TestCase
 {
@@ -53,8 +52,7 @@ class ResponseResolverTest extends TestCase
 
         $this->assertTrue($resolver->continue());
         $this->assertSame($stub['nextUri'], $resolver->getNextUri());
-        $this->assertInstanceOf(Collection::class, $resolver->getData());
-        $this->assertSame($stub['data'], $resolver->getData()->toArray());
+        $this->assertSame($stub['data'], $resolver->getCollection());
     }
 
     public function testResolveWithoutNext()
@@ -75,7 +73,6 @@ class ResponseResolverTest extends TestCase
 
         $this->assertFalse($resolver->continue());
         $this->assertSame('', $resolver->getNextUri());
-        $this->assertInstanceOf(Collection::class, $resolver->getData());
-        $this->assertEmpty($resolver->getData()->toArray());
+        $this->assertEmpty($resolver->getCollection());
     }
 }

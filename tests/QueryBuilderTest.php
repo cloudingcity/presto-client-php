@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Clouding\Presto\Tests;
 
-use Clouding\Presto\Contracts\ProcessorInterface;
+use Clouding\Presto\Connection\Processor;
 use Clouding\Presto\QueryBuilder;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -16,7 +16,7 @@ class QueryBuilderTest extends TestCase
 
     public function testToSql()
     {
-        $mockProcessor = Mockery::mock(ProcessorInterface::class);
+        $mockProcessor = Mockery::mock(Processor::class);
         $builder = new QueryBuilder($mockProcessor);
 
         $query = 'Hi I am Corina';
@@ -27,14 +27,14 @@ class QueryBuilderTest extends TestCase
 
     public function testGet()
     {
-        $mockProcessor = Mockery::mock(ProcessorInterface::class);
+        $mockProcessor = Mockery::mock(Processor::class);
         $mockProcessor->shouldReceive('handle')
             ->once()
-            ->andReturn(collect([1, 2, 3]));
+            ->andReturn([1, 2, 3]);
 
         $builder = new QueryBuilder($mockProcessor);
         $rows = $builder->get();
 
-        $this->assertEquals(collect([1, 2, 3]), $rows);
+        $this->assertEquals([1, 2, 3], $rows);
     }
 }

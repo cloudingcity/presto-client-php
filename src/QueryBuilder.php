@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Clouding\Presto;
 
-use Clouding\Presto\Contracts\ProcessorInterface;
-use Tightenco\Collect\Support\Collection;
+use Clouding\Presto\Connection\Processor;
 
 class QueryBuilder
 {
     /**
      * The processor for query.
      *
-     * @var \Clouding\Presto\Contracts\ProcessorInterface
+     * @var \Clouding\Presto\Connection\Processor
      */
     protected $processor;
 
@@ -26,9 +25,9 @@ class QueryBuilder
     /**
      * Create a new query builder instance.
      *
-     * @param \Clouding\Presto\Contracts\ProcessorInterface $processor
+     * @param \Clouding\Presto\Connection\Processor $processor
      */
-    public function __construct(ProcessorInterface $processor)
+    public function __construct(Processor $processor)
     {
         $this->processor = $processor;
     }
@@ -49,11 +48,11 @@ class QueryBuilder
     /**
      * Execute the query statement.
      *
-     * @return \Tightenco\Collect\Support\Collection
+     * @return array
      *
      * @throws \Clouding\Presto\Exceptions\ResponseResolveException
      */
-    public function get(): Collection
+    public function get(): array
     {
         return $this->processor->handle($this->toSql());
     }

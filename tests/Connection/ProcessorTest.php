@@ -55,6 +55,6 @@ class ProcessorTest extends TestCase
         $processor = new Processor($mockConnection, $mockClient);
         $data = $processor->handle('aaa');
 
-        $this->assertSame([1, 2, 3, 1, 2, 3], $data->toArray());
+        $this->assertSame([1, 2, 3, 1, 2, 3], $data);
     }
 }

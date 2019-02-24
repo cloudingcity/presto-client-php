@@ -6,7 +6,6 @@ namespace Clouding\Presto\Connection;
 
 use Clouding\Presto\Exceptions\ResponseResolveException;
 use Psr\Http\Message\ResponseInterface;
-use Tightenco\Collect\Support\Collection;
 
 class ResponseResolver
 {
@@ -27,17 +26,9 @@ class ResponseResolver
     /**
      * Collect response data.
      *
-     * @var \Tightenco\Collect\Support\Collection
+     * @var array
      */
-    protected $data;
-
-    /**
-     * Create a new instance.
-     */
-    public function __construct()
-    {
-        $this->data = new Collection();
-    }
+    protected $collection = [];
 
     /**
      * Resolve response
@@ -54,7 +45,7 @@ class ResponseResolver
 
         $this->setNextUri($contents);
 
-        $this->setData($contents);
+        $this->collect($contents);
     }
 
     /**
@@ -83,14 +74,14 @@ class ResponseResolver
     }
 
     /**
-     * Set response data.
+     * Collect data.
      *
      * @param object $contents
      */
-    protected function setData(object $contents)
+    protected function collect(object $contents)
     {
         if (isset($contents->data)) {
-            $this->data = $this->data->merge($contents->data);
+            $this->collection = array_merge($this->collection, $contents->data);
         }
     }
 
@@ -115,12 +106,12 @@ class ResponseResolver
     }
 
     /**
-     * Get data.
+     * Get collection.
      *
-     * @return \Tightenco\Collect\Support\Collection
+     * @return array
      */
-    public function getData(): Collection
+    public function getCollection(): array
     {
-        return $this->data;
+        return $this->collection;
     }
 }
