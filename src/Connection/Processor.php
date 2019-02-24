@@ -67,7 +67,7 @@ class Processor implements ProcessorInterface
      * @param  string  $statement
      * @return \Tightenco\Collect\Support\Collection
      *
-     * @throws \Clouding\Presto\Exceptions\PrestoException
+     * @throws \Clouding\Presto\Exceptions\ResponseResolveException
      */
     public function handle(string $statement): Collection
     {

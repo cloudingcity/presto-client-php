@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Clouding\Presto\Exceptions;
 
-use Exception;
+use RuntimeException;
 
-class PrestoException extends Exception
+class ResponseResolveException extends RuntimeException
 {
 
 }

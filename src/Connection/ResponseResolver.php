@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Clouding\Presto\Connection;
 
-use Clouding\Presto\Exceptions\PrestoException;
+use Clouding\Presto\Exceptions\ResponseResolveException;
 use Psr\Http\Message\ResponseInterface;
 use Tightenco\Collect\Support\Collection;
 
@@ -44,7 +44,7 @@ class ResponseResolver
      *
      * @param  \Psr\Http\Message\ResponseInterface  $response
      *
-     * @throws \Clouding\Presto\Exceptions\PrestoException
+     * @throws \Clouding\Presto\Exceptions\ResponseResolveException
      */
     public function resolve(ResponseInterface $response)
     {
@@ -62,13 +62,13 @@ class ResponseResolver
      *
      * @param  object  $contents
      *
-     * @throws \Clouding\Presto\Exceptions\PrestoException
+     * @throws \Clouding\Presto\Exceptions\ResponseResolveException
      */
     protected function checkState(object $contents)
     {
         if ($contents->stats->state === self::FAILED) {
             $message = "{$contents->error->errorName}: {$contents->error->message}";
-            throw new PrestoException($message);
+            throw new ResponseResolveException($message);
         }
     }
 

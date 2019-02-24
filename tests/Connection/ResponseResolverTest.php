@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Clouding\Presto\Tests\Connection;
 
 use Clouding\Presto\Connection\ResponseResolver;
-use Clouding\Presto\Exceptions\PrestoException;
+use Clouding\Presto\Exceptions\ResponseResolveException;
 use GuzzleHttp\Psr7\Response;
 use function GuzzleHttp\Psr7\stream_for;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +26,7 @@ class ResponseResolverTest extends TestCase
         ];
         $mockResponse = new Response(200, [], stream_for(json_encode($stub)));
 
-        $this->expectException(PrestoException::class);
+        $this->expectException(ResponseResolveException::class);
         $this->expectExceptionMessage("{$stub['error']['errorName']}: {$stub['error']['message']}");
 
         $resolver = new ResponseResolver();
