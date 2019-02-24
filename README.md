@@ -16,9 +16,9 @@ A [Presto](https://prestodb.io) http client for the [PHP](http://www.php.net/) p
 composer require clouding/presto
 ```
 
-## Usage
+## Quick Start
 
-1. Create a presto manager.
+Create a presto manager.
 ```php
 use Clouding\Presto\Presto;
 
@@ -30,13 +30,44 @@ $presto->addConnection([
     'schema' => 'presto',
 ]);
 
+// Set manager as global
 $presto->setAsGlobal();
 ```
 
-2. Using raw query 
+Using query and get a [collection](https://github.com/tightenco/collect)
 ```php
 $posts = Presto::query('select * from posts')->get();
-var_dump($posts); // [[1, 'Good pracetice'], [2, 'Make code cleaner']]
+var_dump($posts->toArray()); // [[1, 'Good pracetice'], [2, 'Make code cleaner']]
+```
+
+## Usage
+
+### Multiple connections
+
+```php
+use Clouding\Presto\Presto;
+
+$presto = new Presto();
+
+$presto->addConnection([
+    'host' => 'localhost:8080',
+    'catalog' => 'default',
+    'schema' => 'presto',
+]);
+
+$presto->addConnection([
+    'host' => 'localhost:8080',
+    'catalog' => 'default2',
+    'schema' => 'presto2',
+], 'presto2');
+
+$presto->setAsGlobal();
+
+// Get connections
+$connections = Presto::getConnections();
+
+// Specify connection
+$posts = Presto::query('select * from posts', 'presto2')->get();
 ```
 
 ## Running Tests
