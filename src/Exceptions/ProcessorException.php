@@ -6,7 +6,7 @@ namespace Clouding\Presto\Exceptions;
 
 use RuntimeException;
 
-class ResponseResolveException extends RuntimeException
+class ProcessorException extends RuntimeException
 {
 
 }

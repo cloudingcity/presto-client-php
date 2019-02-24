@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Clouding\Presto\Tests;
 
-use Clouding\Presto\Processor\Processor;
+use Clouding\Presto\Processor;
 use Clouding\Presto\QueryBuilder;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
+use Tightenco\Collect\Support\Collection;
 
 class QueryBuilderTest extends TestCase
 {
@@ -28,13 +29,14 @@ class QueryBuilderTest extends TestCase
     public function testGet()
     {
         $mockProcessor = Mockery::mock(Processor::class);
-        $mockProcessor->shouldReceive('handle')
+        $mockProcessor->shouldReceive('execute')
             ->once()
-            ->andReturn([1, 2, 3]);
+            ->andReturn(collect([1, 2, 3]));
 
         $builder = new QueryBuilder($mockProcessor);
         $rows = $builder->get();
 
-        $this->assertEquals([1, 2, 3], $rows);
+        $this->assertInstanceOf(Collection::class, $rows);
+        $this->assertEquals([1, 2, 3], $rows->toArray());
     }
 }

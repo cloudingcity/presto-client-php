@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Clouding\Presto\Connection;
 
-use Clouding\Presto\Processor\Processor;
+use Clouding\Presto\Processor;
 use Clouding\Presto\QueryBuilder;
 
 trait ConnectionQueryTrait
@@ -23,7 +23,7 @@ trait ConnectionQueryTrait
     /**
      * Get query builder with processor.
      *
-     * @param  \Clouding\Presto\Processor\Processor|null  $processor
+     * @param  \Clouding\Presto\Processor|null  $processor
      * @return \Clouding\Presto\QueryBuilder
      */
     protected function getBuilder(Processor $processor = null): QueryBuilder
