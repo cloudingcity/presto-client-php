@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Clouding\Presto\Tests\Connection;
 
 use Clouding\Presto\Connection\Connection;
-use Clouding\Presto\Connection\Processor;
+use Clouding\Presto\Processor\Processor;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;

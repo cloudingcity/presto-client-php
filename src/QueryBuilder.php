@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Clouding\Presto;
 
-use Clouding\Presto\Connection\Processor;
+use Clouding\Presto\Processor\Processor;
 
 class QueryBuilder
 {
     /**
      * The processor for query.
      *
-     * @var \Clouding\Presto\Connection\Processor
+     * @var \Clouding\Presto\Processor\Processor
      */
     protected $processor;
 
@@ -25,7 +25,7 @@ class QueryBuilder
     /**
      * Create a new query builder instance.
      *
-     * @param \Clouding\Presto\Connection\Processor $processor
+     * @param \Clouding\Presto\Processor\Processor $processor
      */
     public function __construct(Processor $processor)
     {

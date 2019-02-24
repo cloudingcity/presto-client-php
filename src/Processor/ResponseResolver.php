@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Clouding\Presto\Connection;
+namespace Clouding\Presto\Processor;
 
 use Clouding\Presto\Exceptions\ResponseResolveException;
 use Psr\Http\Message\ResponseInterface;

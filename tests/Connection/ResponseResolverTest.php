@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Clouding\Presto\Tests\Connection;
 
-use Clouding\Presto\Connection\ResponseResolver;
+use Clouding\Presto\Processor\ResponseResolver;
 use Clouding\Presto\Exceptions\ResponseResolveException;
 use GuzzleHttp\Psr7\Response;
 use function GuzzleHttp\Psr7\stream_for;

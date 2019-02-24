@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Clouding\Presto\Connection;
+namespace Clouding\Presto\Processor;
 
+use Clouding\Presto\Connection\Connection;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 
