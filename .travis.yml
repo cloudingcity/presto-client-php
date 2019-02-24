@@ -1,0 +1,26 @@
+language: php
+
+php:
+  - 7.2
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+install:
+  - travis_retry composer self-update
+  - travis_retry composer install --no-interaction --prefer-source --dev
+
+script:
+  - vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
+  - composer phpcs
+  - composer phpstan
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  email:
+    recipients:
+      - ghost0436@gmail.com
+    on_failure: always
