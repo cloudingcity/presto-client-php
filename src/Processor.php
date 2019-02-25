@@ -192,9 +192,9 @@ class Processor
         $data = $contents->data;
 
         if ($this->isCollectAssoc && isset($contents->columns)) {
-            $columns = collect($contents->columns)->pluck('name');
+            $columns = (new Collection($contents->columns))->pluck('name');
 
-            $data = collect($data)->map(function (array $row) use ($columns) {
+            $data = (new Collection($data))->map(function (array $row) use ($columns) {
                 return $columns->combine($row)->toArray();
             });
         }
