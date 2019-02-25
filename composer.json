@@ -12,9 +12,9 @@
     ],
     "require": {
         "php": ">=7.2",
-        "guzzlehttp/guzzle": "~6.0",
-        "tightenco/collect": "^5.7",
-        "ext-json": "*"
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "~6.3",
+        "tightenco/collect": "^5.7"
     },
     "require-dev": {
         "mockery/mockery": "^1.2",
