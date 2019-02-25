@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Clouding\Presto\Tests\Connection;
+namespace Clouding\Presto\Tests;
 
 use Clouding\Presto\Connection\Connection;
 use Clouding\Presto\Exceptions\ProcessorException;

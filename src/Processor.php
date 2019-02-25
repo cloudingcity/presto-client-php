@@ -191,7 +191,7 @@ class Processor
 
         $data = $contents->data;
 
-        if ($this->isCollectAssoc) {
+        if ($this->isCollectAssoc && isset($contents->columns)) {
             $columns = collect($contents->columns)->pluck('name');
 
             $data = collect($data)->map(function (array $row) use ($columns) {
