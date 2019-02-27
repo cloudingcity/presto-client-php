@@ -18,7 +18,7 @@ composer require clouding/presto
 
 ## Quick Start
 
-Create a presto manager.
+Create a presto manager
 ```php
 use Clouding\Presto\Presto;
 
@@ -30,11 +30,16 @@ $presto->addConnection([
     'schema' => 'presto',
 ]);
 
-// Set manager as global
+// Set manager as global (optional)
 $presto->setAsGlobal();
 ```
 
-Using query and get a [collection](https://github.com/tightenco/collect)
+Get a default connection and send query
+```php
+$posts = $presto->connection()->query('select * from posts')->get();
+```
+
+If set manager as global, just query directly and get data with [collection](https://github.com/tightenco/collect)
 ```php
 $posts = Presto::query('select * from posts')->get();
 var_dump($posts->toArray()); // [[1, 'Good pracetice'], [2, 'Make code cleaner']]

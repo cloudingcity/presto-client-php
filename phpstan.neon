@@ -1,2 +1,4 @@
 includes:
 	- vendor/phpstan/phpstan-mockery/extension.neon
+parameters:
+	bootstrap: %rootDir%/../../../tests/bootstrap.php

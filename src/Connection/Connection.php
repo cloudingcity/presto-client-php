@@ -6,7 +6,7 @@ namespace Clouding\Presto\Connection;
 
 class Connection
 {
-    use ConnectionQueryTrait;
+    use QueryTrait;
 
     /**
      * Default user.

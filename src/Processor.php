@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Clouding\Presto;
 
 use Clouding\Presto\Connection\Connection;
+use Clouding\Presto\Contracts\Collectorable;
 use Clouding\Presto\Exceptions\ProcessorException;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
@@ -55,18 +56,11 @@ class Processor
     protected $nextUri = '';
 
     /**
-     * Check collect is associative.
-     *
-     * @var bool
-     */
-    protected $isCollectAssoc = false;
-
-    /**
      * Collect response data.
      *
-     * @var \Tightenco\Collect\Support\Collection
+     * @var \Clouding\Presto\Contracts\Collectorable
      */
-    protected $collection;
+    protected $collector;
 
     /**
      * Create a new instance.
@@ -78,18 +72,19 @@ class Processor
     {
         $this->connection = $connection;
         $this->client = $client ?? new Client();
-        $this->collection = new Collection;
     }
 
     /**
      * Handle connection query.
      *
-     * @param  string  $query
+     * @param  string                                    $query
+     * @param  \Clouding\Presto\Contracts\Collectorable  $collector
      * @return \Tightenco\Collect\Support\Collection
-     *
      */
-    public function execute(string $query): Collection
+    public function execute(string $query, Collectorable $collector): Collection
     {
+        $this->collector = $collector;
+
         $this->resolve($this->sendQuery($query));
 
         while ($this->continue()) {
@@ -98,7 +93,7 @@ class Processor
             $this->resolve($this->sendNext());
         }
 
-        return $this->collection;
+        return $this->collector->get();
     }
 
     /**
@@ -142,7 +137,7 @@ class Processor
 
         $this->setNextUri($contents);
 
-        $this->collect($contents);
+        $this->collector->collect($contents);
     }
 
     /**
@@ -168,38 +163,6 @@ class Processor
     protected function setNextUri(object $contents)
     {
         $this->nextUri = $contents->nextUri ?? null;
-    }
-
-    /**
-     * Set collect associative.
-     */
-    public function setCollectAssoc()
-    {
-        $this->isCollectAssoc = true;
-    }
-
-    /**
-     * Collect data.
-     *
-     * @param object $contents
-     */
-    protected function collect(object $contents)
-    {
-        if (!isset($contents->data)) {
-            return;
-        }
-
-        $data = $contents->data;
-
-        if ($this->isCollectAssoc && isset($contents->columns)) {
-            $columns = (new Collection($contents->columns))->pluck('name');
-
-            $data = (new Collection($data))->map(function (array $row) use ($columns) {
-                return $columns->combine($row)->toArray();
-            });
-        }
-
-        $this->collection = $this->collection->merge($data);
     }
 
     /**

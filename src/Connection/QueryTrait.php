@@ -7,7 +7,7 @@ namespace Clouding\Presto\Connection;
 use Clouding\Presto\Processor;
 use Clouding\Presto\QueryBuilder;
 
-trait ConnectionQueryTrait
+trait QueryTrait
 {
     /**
      * Begin a fluent query against a raw query.

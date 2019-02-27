@@ -6,7 +6,6 @@ namespace Clouding\Presto\Tests;
 
 use Clouding\Presto\Processor;
 use Clouding\Presto\QueryBuilder;
-use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 use Tightenco\Collect\Support\Collection;
@@ -17,7 +16,7 @@ class QueryBuilderTest extends TestCase
 
     public function testToSql()
     {
-        $mockProcessor = Mockery::mock(Processor::class);
+        $mockProcessor = mock(Processor::class);
         $builder = new QueryBuilder($mockProcessor);
 
         $query = 'Hi I am Corina';
@@ -28,7 +27,7 @@ class QueryBuilderTest extends TestCase
 
     public function testGet()
     {
-        $mockProcessor = Mockery::mock(Processor::class);
+        $mockProcessor = mock(Processor::class);
         $mockProcessor->shouldReceive('execute')
             ->once()
             ->andReturn(collect([1, 2, 3]));
@@ -42,9 +41,7 @@ class QueryBuilderTest extends TestCase
 
     public function testGetAssoc()
     {
-        $mockProcessor = Mockery::mock(Processor::class);
-        $mockProcessor->shouldReceive('setCollectAssoc')
-            ->once();
+        $mockProcessor = mock(Processor::class);
         $mockProcessor->shouldReceive('execute')
             ->once()
             ->andReturn(collect([1, 2, 3]));
