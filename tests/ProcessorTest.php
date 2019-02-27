@@ -85,6 +85,34 @@ class ProcessorTest extends TestCase
         $this->assertSame([1, 2, 3, 1, 2, 3], $data->toArray());
     }
 
+    public function testExecuteAssoc()
+    {
+        $mockConnection = $this->getMockConnection();
+
+        $responseStubs = [
+            [
+                'columns' => [['name' => 'title'], ['name' => 'body']],
+                'data' => [['Title 1', 'Body 1'], ['Title 2', 'Body 2']],
+                'stats' => [
+                    'state' => 'xxx'
+                ],
+            ]
+        ];
+        $mockHandler = new MockHandler([
+            new Response(200, [], stream_for(json_encode($responseStubs[0]))),
+        ]);
+        $mockClient = new Client(['handler' => HandlerStack::create($mockHandler)]);
+
+        $processor = new Processor($mockConnection, $mockClient);
+        $processor->setCollectAssoc();
+        $data = $processor->execute('aaa');
+
+        $this->assertInstanceOf(Collection::class, $data);
+
+        $expected = [['title' => 'Title 1', 'body' => 'Body 1'], ['title' => 'Title 2', 'body' => 'Body 2']];
+        $this->assertSame($expected, $data->toArray());
+    }
+
     protected function getMockConnection()
     {
         $mock = Mockery::mock(Connection::class);
