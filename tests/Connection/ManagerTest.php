@@ -6,6 +6,7 @@ namespace Clouding\Presto\Tests\Connection;
 
 use Clouding\Presto\Connection\Connection;
 use Clouding\Presto\Connection\Manager;
+use Clouding\Presto\Container;
 use Clouding\Presto\Exceptions\ManagerException;
 use PHPUnit\Framework\TestCase;
 
@@ -16,27 +17,20 @@ class ManagerTest extends TestCase
         $this->expectException(ManagerException::class);
         $this->expectExceptionMessage("Not found connection name of 'apple'");
 
-        $manager = new Manager([]);
+        $container = new Container();
+        $manager = new Manager($container);
         $manager->connection('apple');
     }
 
     public function testConnection()
     {
-        $manager = new Manager(
-            [
-                'default' => [
-                    'fruit' => 'apple',
-                ],
-                'super' => [
-                    'fruit' => 'banana',
-                ]
-            ]
-        );
-        $default = $manager->connection('default');
-        $default2 = $manager->connection('default');
+        $container = new Container(['super' => ['man'], 'ant' => ['man']]);
+        $manager = new Manager($container);
+        $super = $manager->connection('super');
+        $super2 = $manager->connection('super');
 
-        $this->assertInstanceOf(Connection::class, $default);
-        $this->assertSame($default, $default2);
+        $this->assertInstanceOf(Connection::class, $super);
+        $this->assertSame($super, $super2);
     }
 
     public function testGetConnections()
@@ -49,7 +43,8 @@ class ManagerTest extends TestCase
                 'fruit' => 'banana',
             ]
         ];
-        $manager = new Manager($connections);
+        $container = new Container($connections);
+        $manager = new Manager($container);
 
         $this->assertSame($connections, $manager->getConnections());
     }

@@ -10,11 +10,11 @@ use Clouding\Presto\Connection\Manager;
 class Presto
 {
     /**
-     * The connections.
+     * The container instance.
      *
-     * @var array
+     * @var \Clouding\Presto\Container
      */
-    protected $connections = [];
+    protected $container;
 
     /**
      * Connection manager.
@@ -31,6 +31,17 @@ class Presto
     protected static $instance;
 
     /**
+     * Create a new presto manager instance.
+     *
+     * @param \Clouding\Presto\Container|null $container
+     */
+    public function __construct(Container $container = null)
+    {
+        $this->container = $container ?? new Container();
+        $this->manager = new Manager($this->container);
+    }
+
+    /**
      * Register a connection.
      *
      * @param  array   $config
@@ -39,7 +50,7 @@ class Presto
      */
     public function addConnection(array $config, $name = 'default')
     {
-        $this->connections[$name] = $config;
+        $this->container[$name] = $config;
     }
 
     /**
@@ -47,8 +58,6 @@ class Presto
      */
     public function setAsGlobal()
     {
-        $this->manager = new Manager($this->connections);
-
         static::$instance = $this;
     }
 

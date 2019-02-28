@@ -4,36 +4,37 @@ declare(strict_types=1);
 
 namespace Clouding\Presto\Connection;
 
+use Clouding\Presto\Container;
 use Clouding\Presto\Exceptions\ManagerException;
 
 class Manager
 {
     /**
-     * Manage connections.
+     * The manager's container.
+     *
+     * @var \Clouding\Presto\Container
+     */
+    protected $container;
+
+    /**
+     * The manager's connections.
      *
      * @var array
      */
     protected $connections;
 
     /**
-     * Connection instances.
-     *
-     * @var array
-     */
-    protected $instances;
-
-    /**
      * Create a new manager instance.
      *
-     * @param array $connections
+     * @param \Clouding\Presto\Container $container
      */
-    public function __construct(array $connections)
+    public function __construct(Container $container)
     {
-        $this->connections = $connections;
+        $this->container = $container;
     }
 
     /**
-     * Get a connection instance.
+     * Get a connection.
      *
      * @param  string $name
      * @return \Clouding\Presto\Connection\Connection
@@ -44,24 +45,24 @@ class Manager
     }
 
     /**
-     * Make a connection instance.
+     * Make a connection.
      *
      * @param  string  $name
      * @return \Clouding\Presto\Connection\Connection
      */
     protected function makeConnection(string $name): Connection
     {
-        if (isset($this->instances[$name])) {
-            return $this->instances[$name];
+        if (isset($this->connections[$name])) {
+            return $this->connections[$name];
         }
 
-        if (!isset($this->connections[$name])) {
+        if (!isset($this->container[$name])) {
             throw new ManagerException("Not found connection name of '$name'");
         }
 
-        $this->instances[$name] = new Connection($this->connections[$name]);
+        $this->connections[$name] = new Connection($this->container[$name]);
 
-        return $this->instances[$name];
+        return $this->connections[$name];
     }
 
     /**
@@ -71,6 +72,6 @@ class Manager
      */
     public function getConnections(): array
     {
-        return $this->connections;
+        return $this->container->toArray();
     }
 }

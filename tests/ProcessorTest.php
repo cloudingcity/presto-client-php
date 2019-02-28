@@ -23,8 +23,8 @@ class ProcessorTest extends TestCase
 
     public function testExecuteException()
     {
-        $mockConnection = $this->getMockConnection();
-        $responseStub = [
+        $connection = $this->getConnection();
+        $response = [
             'stats' => [
                 'state' => Processor::FAILED
             ],
@@ -33,25 +33,25 @@ class ProcessorTest extends TestCase
                 'errorName' => 'This is a error name',
             ]
         ];
-        $mockHandler = new MockHandler([
-            new Response(200, [], stream_for(json_encode($responseStub))),
+        $handler = new MockHandler([
+            new Response(200, [], stream_for(json_encode($response))),
         ]);
-        $mockClient = new Client(['handler' => HandlerStack::create($mockHandler)]);
-        $mockCollector = mock(Collectorable::class);
+        $client = new Client(['handler' => HandlerStack::create($handler)]);
+        $collector = mock(Collectorable::class);
 
 
         $this->expectException(ProcessorException::class);
-        $this->expectExceptionMessage("{$responseStub['error']['errorName']}: {$responseStub['error']['message']}");
+        $this->expectExceptionMessage("{$response['error']['errorName']}: {$response['error']['message']}");
 
-        $processor = new Processor($mockConnection, $mockClient);
-        $processor->execute('Go to school', $mockCollector);
+        $processor = new Processor($connection, $client);
+        $processor->execute('Go to school', $collector);
     }
 
     public function testExecute()
     {
-        $mockConnection = $this->getMockConnection();
+        $connection = $this->getConnection();
 
-        $responseStubs = [
+        $responses = [
             [
                 'nextUri' => 'http://example.com/1',
                 'data' => [1, 2, 3],
@@ -72,29 +72,29 @@ class ProcessorTest extends TestCase
                 ],
             ]
         ];
-        $mockHandler = new MockHandler([
-            new Response(200, [], stream_for(json_encode($responseStubs[0]))),
-            new Response(200, [], stream_for(json_encode($responseStubs[1]))),
-            new Response(200, [], stream_for(json_encode($responseStubs[2]))),
+        $handler = new MockHandler([
+            new Response(200, [], stream_for(json_encode($responses[0]))),
+            new Response(200, [], stream_for(json_encode($responses[1]))),
+            new Response(200, [], stream_for(json_encode($responses[2]))),
         ]);
-        $mockClient = new Client(['handler' => HandlerStack::create($mockHandler)]);
+        $client = new Client(['handler' => HandlerStack::create($handler)]);
 
-        $mockCollector = mock(Collectorable::class);
-        $mockCollector->shouldReceive('collect')
+        $collector = mock(Collectorable::class);
+        $collector->shouldReceive('collect')
             ->times(3);
-        $mockCollector->shouldReceive('get')
+        $collector->shouldReceive('get')
             ->once()
             ->andReturn(collect([1, 2, 3, 1, 2, 3]));
 
 
-        $processor = new Processor($mockConnection, $mockClient);
-        $data = $processor->execute('aaa', $mockCollector);
+        $processor = new Processor($connection, $client);
+        $data = $processor->execute('aaa', $collector);
 
         $this->assertInstanceOf(Collection::class, $data);
         $this->assertSame([1, 2, 3, 1, 2, 3], $data->toArray());
     }
 
-    protected function getMockConnection()
+    protected function getConnection()
     {
         $mock = mock(Connection::class);
         $mock->shouldReceive('getHost')

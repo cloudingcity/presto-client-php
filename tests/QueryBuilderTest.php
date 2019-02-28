@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Clouding\Presto\Tests;
 
+use Clouding\Presto\Collectors\AssocCollector;
+use Clouding\Presto\Collectors\Collector;
 use Clouding\Presto\Processor;
 use Clouding\Presto\QueryBuilder;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -16,23 +18,23 @@ class QueryBuilderTest extends TestCase
 
     public function testToSql()
     {
-        $mockProcessor = mock(Processor::class);
-        $builder = new QueryBuilder($mockProcessor);
+        $processor = mock(Processor::class);
 
-        $query = 'Hi I am Corina';
-        $builder->raw($query);
+        $builder = new QueryBuilder($processor);
+        $builder->raw('Hi I am Corina');
 
-        $this->assertSame($query, $builder->toSql());
+        $this->assertSame('Hi I am Corina', $builder->toSql());
     }
 
     public function testGet()
     {
-        $mockProcessor = mock(Processor::class);
-        $mockProcessor->shouldReceive('execute')
+        $processor = spy(Processor::class);
+        $processor->shouldReceive('execute')
             ->once()
+            ->with('', Collector::class)
             ->andReturn(collect([1, 2, 3]));
 
-        $builder = new QueryBuilder($mockProcessor);
+        $builder = new QueryBuilder($processor);
         $rows = $builder->get();
 
         $this->assertInstanceOf(Collection::class, $rows);
@@ -41,12 +43,13 @@ class QueryBuilderTest extends TestCase
 
     public function testGetAssoc()
     {
-        $mockProcessor = mock(Processor::class);
-        $mockProcessor->shouldReceive('execute')
+        $processor = mock(Processor::class);
+        $processor->shouldReceive('execute')
             ->once()
+            ->with('', AssocCollector::class)
             ->andReturn(collect([1, 2, 3]));
 
-        $builder = new QueryBuilder($mockProcessor);
+        $builder = new QueryBuilder($processor);
         $rows = $builder->getAssoc();
 
         $this->assertInstanceOf(Collection::class, $rows);
