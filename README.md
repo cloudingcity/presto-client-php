@@ -1,19 +1,19 @@
-# Presto 
+# Presto Client PHP
 
-[![](https://img.shields.io/packagist/php-v/clouding/presto.svg?style=flat-square)](https://packagist.org/packages/clouding/presto)
-[![](https://img.shields.io/packagist/v/clouding/presto.svg?style=flat-square)](https://packagist.org/packages/clouding/presto)
-[![](https://img.shields.io/travis/com/cloudingcity/presto.svg?style=flat-square)](https://travis-ci.com/cloudingcity/presto)
-[![](https://img.shields.io/codecov/c/github/cloudingcity/presto.svg?style=flat-square)](https://codecov.io/gh/cloudingcity/presto)
+[![](https://img.shields.io/packagist/php-v/clouding/presto-client-php.svg?style=flat-square)](https://packagist.org/packages/clouding/presto-client-php)
+[![](https://img.shields.io/packagist/v/clouding/presto-client-php.svg?style=flat-square&cacheSeconds=1800)](https://packagist.org/packages/clouding/presto-client-php)
+[![](https://img.shields.io/travis/com/cloudingcity/presto-client-php.svg?style=flat-square)](https://travis-ci.com/cloudingcity/presto-client-php)
+[![](https://img.shields.io/codecov/c/github/cloudingcity/presto-client-php.svg?style=flat-square)](https://codecov.io/gh/cloudingcity/presto-client-php)
 [![PHPStan](https://img.shields.io/badge/PHPStan-enabled-44CC11.svg?longCache=true&style=flat-square)](https://github.com/phpstan/phpstan)
 
-A [Presto](https://prestodb.io) http client for the [PHP](http://www.php.net/) programming language.
+A [Presto](https://prestodb.io) client for the [PHP](http://www.php.net/) programming language.
 
 > Inspired from [illuminate/database](https://github.com/illuminate/database)
 
 ## Installation
 
 ```
-composer require clouding/presto
+composer require clouding/presto-client-php
 ```
 
 ## Quick Start
@@ -41,10 +41,10 @@ $posts = $presto->connection()->query('select * from posts')->get();
 
 If set manager as global, just query directly and get data with [collection](https://github.com/tightenco/collect)
 ```php
-$posts = Presto::query('select * from posts')->get();
+$posts = Presto::query('SELECT * FROM posts')->get();
 var_dump($posts->toArray()); // [[1, 'Good pracetice'], [2, 'Make code cleaner']]
 
-$posts = Presto::query('select * from posts')->getAssoc();
+$posts = Presto::query('SELECT * FROM posts')->getAssoc();
 var_dump($posts->toArray()); // [['id' => 1, 'title' => 'Good pracetice'], ['id' => 2, 'title' => 'Make code cleaner']]
 ```
 
@@ -75,7 +75,7 @@ $presto->setAsGlobal();
 $connections = Presto::getConnections();
 
 // Specify connection
-$posts = Presto::query('select * from posts', 'presto2')->get();
+$posts = Presto::query('SELECT * FROM posts', 'presto2')->get();
 ```
 
 ## Running Tests

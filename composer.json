@@ -1,6 +1,6 @@
 {
-    "name": "clouding/presto",
-    "description": "A simple library for presto http client.",
+    "name": "clouding/presto-client-php",
+    "description": "Presto client library for PHP.",
     "keywords": ["presto", "http", "library"],
     "type": "library",
     "license": "MIT",
