@@ -7,15 +7,15 @@ namespace Clouding\Presto\Tests\Connection;
 use Clouding\Presto\Connection\Connection;
 use Clouding\Presto\Connection\Manager;
 use Clouding\Presto\Container;
-use Clouding\Presto\Exceptions\ManagerException;
+use Clouding\Presto\Exceptions\ConnectionNotFoundException;
 use PHPUnit\Framework\TestCase;
 
 class ManagerTest extends TestCase
 {
     public function testConnectionException()
     {
-        $this->expectException(ManagerException::class);
-        $this->expectExceptionMessage("Not found connection name of 'apple'");
+        $this->expectException(ConnectionNotFoundException::class);
+        $this->expectExceptionMessage('Connection not found: [apple]');
 
         $container = new Container();
         $manager = new Manager($container);

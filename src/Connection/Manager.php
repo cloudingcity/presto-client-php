@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Clouding\Presto\Connection;
 
 use Clouding\Presto\Container;
-use Clouding\Presto\Exceptions\ManagerException;
+use Clouding\Presto\Exceptions\ConnectionNotFoundException;
 
 class Manager
 {
@@ -57,7 +57,7 @@ class Manager
         }
 
         if (!isset($this->container[$name])) {
-            throw new ManagerException("Not found connection name of '$name'");
+            throw new ConnectionNotFoundException("Connection not found: [$name]");
         }
 
         $this->connections[$name] = new Connection($this->container[$name]);

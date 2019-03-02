@@ -6,7 +6,7 @@ namespace Clouding\Presto\Exceptions;
 
 use RuntimeException;
 
-class ManagerException extends RuntimeException
+class PrestoException extends RuntimeException
 {
 
 }

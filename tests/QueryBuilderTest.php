@@ -28,7 +28,7 @@ class QueryBuilderTest extends TestCase
 
     public function testGet()
     {
-        $processor = spy(Processor::class);
+        $processor = mock(Processor::class);
         $processor->shouldReceive('execute')
             ->once()
             ->with('', Collector::class)

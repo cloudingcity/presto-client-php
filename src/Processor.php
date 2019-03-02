@@ -6,7 +6,7 @@ namespace Clouding\Presto;
 
 use Clouding\Presto\Connection\Connection;
 use Clouding\Presto\Contracts\Collectorable;
-use Clouding\Presto\Exceptions\ProcessorException;
+use Clouding\Presto\Exceptions\PrestoException;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 use Tightenco\Collect\Support\Collection;
@@ -145,13 +145,13 @@ class Processor
      *
      * @param  object  $contents
      *
-     * @throws \Clouding\Presto\Exceptions\ProcessorException
+     * @throws \Clouding\Presto\Exceptions\PrestoException
      */
     protected function checkState(object $contents)
     {
         if ($contents->stats->state === self::FAILED) {
             $message = "{$contents->error->errorName}: {$contents->error->message}";
-            throw new ProcessorException($message);
+            throw new PrestoException($message);
         }
     }
 

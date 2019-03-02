@@ -6,7 +6,7 @@ namespace Clouding\Presto\Exceptions;
 
 use RuntimeException;
 
-class ProcessorException extends RuntimeException
+class ConnectionNotFoundException extends RuntimeException
 {
 
 }

@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace Clouding\Presto\Tests;
 
+use BlastCloud\Guzzler\UsesGuzzler;
 use Clouding\Presto\Connection\Connection;
 use Clouding\Presto\Contracts\Collectorable;
-use Clouding\Presto\Exceptions\ProcessorException;
+use Clouding\Presto\Exceptions\PrestoException;
 use Clouding\Presto\Processor;
-use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use function GuzzleHttp\Psr7\stream_for;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 use Tightenco\Collect\Support\Collection;
@@ -20,10 +17,12 @@ use Tightenco\Collect\Support\Collection;
 class ProcessorTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
+    use UsesGuzzler;
 
     public function testExecuteException()
     {
-        $connection = $this->getConnection();
+        $connection = $this->createConnection();
+
         $response = [
             'stats' => [
                 'state' => Processor::FAILED
@@ -33,23 +32,23 @@ class ProcessorTest extends TestCase
                 'errorName' => 'This is a error name',
             ]
         ];
-        $handler = new MockHandler([
-            new Response(200, [], stream_for(json_encode($response))),
-        ]);
-        $client = new Client(['handler' => HandlerStack::create($handler)]);
+        $this->guzzler->queueResponse(
+            new Response(200, [], json_encode($response))
+        );
+
         $collector = mock(Collectorable::class);
 
 
-        $this->expectException(ProcessorException::class);
+        $this->expectException(PrestoException::class);
         $this->expectExceptionMessage("{$response['error']['errorName']}: {$response['error']['message']}");
 
-        $processor = new Processor($connection, $client);
+        $processor = new Processor($connection, $this->guzzler->getClient());
         $processor->execute('Go to school', $collector);
     }
 
     public function testExecute()
     {
-        $connection = $this->getConnection();
+        $connection = $this->createConnection();
 
         $responses = [
             [
@@ -72,12 +71,11 @@ class ProcessorTest extends TestCase
                 ],
             ]
         ];
-        $handler = new MockHandler([
-            new Response(200, [], stream_for(json_encode($responses[0]))),
-            new Response(200, [], stream_for(json_encode($responses[1]))),
-            new Response(200, [], stream_for(json_encode($responses[2]))),
-        ]);
-        $client = new Client(['handler' => HandlerStack::create($handler)]);
+        $this->guzzler->queueResponse(
+            new Response(200, [], json_encode($responses[0])),
+            new Response(200, [], json_encode($responses[1])),
+            new Response(200, [], json_encode($responses[2]))
+        );
 
         $collector = mock(Collectorable::class);
         $collector->shouldReceive('collect')
@@ -87,23 +85,44 @@ class ProcessorTest extends TestCase
             ->andReturn(collect([1, 2, 3, 1, 2, 3]));
 
 
-        $processor = new Processor($connection, $client);
-        $data = $processor->execute('aaa', $collector);
+        $processor = new Processor($connection, $this->guzzler->getClient());
+        $data = $processor->execute('Query String', $collector);
 
         $this->assertInstanceOf(Collection::class, $data);
         $this->assertSame([1, 2, 3, 1, 2, 3], $data->toArray());
+
+        // Test http request
+        $this->guzzler->assertHistoryCount(3);
+        $this->guzzler->expects($this->once())
+            ->post('http://presto.abc' . Processor::STATEMENT_URI)
+            ->withHeader('X-Presto-User', 'test user')
+            ->withHeader('X-Presto-Schema', 'test schema')
+            ->withHeader('X-Presto-Catalog', 'test catalog')
+            ->withBody('Query String');
+        $this->guzzler->expects($this->once())
+            ->get('http://example.com/1');
+        $this->guzzler->expects($this->once())
+            ->get('http://example.com/2');
     }
 
-    protected function getConnection()
+    protected function createConnection()
     {
         $mock = mock(Connection::class);
         $mock->shouldReceive('getHost')
+            ->withNoArgs()
+            ->andReturn('http://presto.abc')
             ->once();
         $mock->shouldReceive('getUser')
+            ->withNoArgs()
+            ->andReturn('test user')
             ->once();
         $mock->shouldReceive('getSchema')
+            ->withNoArgs()
+            ->andReturn('test schema')
             ->once();
         $mock->shouldReceive('getCatalog')
+            ->withNoArgs()
+            ->andReturn('test catalog')
             ->once();
 
         return $mock;
