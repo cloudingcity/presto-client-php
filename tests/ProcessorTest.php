@@ -7,6 +7,7 @@ namespace Clouding\Presto\Tests;
 use BlastCloud\Guzzler\UsesGuzzler;
 use Clouding\Presto\Connection\Connection;
 use Clouding\Presto\Contracts\Collectorable;
+use Clouding\Presto\Contracts\PrestoState;
 use Clouding\Presto\Exceptions\PrestoException;
 use Clouding\Presto\Processor;
 use GuzzleHttp\Psr7\Response;
@@ -25,7 +26,7 @@ class ProcessorTest extends TestCase
 
         $response = [
             'stats' => [
-                'state' => Processor::FAILED
+                'state' => PrestoState::FAILED
             ],
             'error' => [
                 'message' => 'This is a error message',

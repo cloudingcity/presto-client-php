@@ -6,6 +6,7 @@ namespace Clouding\Presto;
 
 use Clouding\Presto\Connection\Connection;
 use Clouding\Presto\Contracts\Collectorable;
+use Clouding\Presto\Contracts\PrestoState;
 use Clouding\Presto\Exceptions\PrestoException;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
@@ -21,18 +22,11 @@ class Processor
     const STATEMENT_URI = '/v1/statement';
 
     /**
-     * Resend request sleep microseconds.
+     * Send request delay milliseconds.
      *
      * @var int
      */
-    const SLEEP = 50000;
-
-    /**
-     * The state of failed.
-     *
-     * @var string
-     */
-    const FAILED = 'FAILED';
+    const DELAY = 50;
 
     /**
      * The connection information.
@@ -71,7 +65,7 @@ class Processor
     public function __construct(Connection $connection, Client $client = null)
     {
         $this->connection = $connection;
-        $this->client = $client ?? new Client();
+        $this->client = $client ?? new Client(['delay' => static::DELAY]);
     }
 
     /**
@@ -88,8 +82,6 @@ class Processor
         $this->resolve($this->sendQuery($query));
 
         while ($this->continue()) {
-            usleep(static::SLEEP);
-
             $this->resolve($this->sendNext());
         }
 
@@ -149,7 +141,7 @@ class Processor
      */
     protected function checkState(object $contents)
     {
-        if ($contents->stats->state === self::FAILED) {
+        if ($contents->stats->state === PrestoState::FAILED) {
             $message = "{$contents->error->errorName}: {$contents->error->message}";
             throw new PrestoException($message);
         }
