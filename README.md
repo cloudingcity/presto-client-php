@@ -8,7 +8,12 @@
 
 A [Presto](https://prestodb.io) client for the [PHP](http://www.php.net/) programming language.
 
-> Inspired from [illuminate/database](https://github.com/illuminate/database)
+> Inspired by [illuminate/database](https://github.com/illuminate/database)
+
+## Features
+
+- Multiple connections define.
+- Get result as an associative array.
 
 ## Installation
 
