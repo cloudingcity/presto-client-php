@@ -58,6 +58,7 @@ $posts->toArray();
 
 $posts = Presto::query('SELECT * FROM posts')->getAssoc();
 $posts->toArray(); 
+
 /* 
     [
         ['id' => 1, 'title' => 'Good pracetice'],
