@@ -47,10 +47,15 @@ $posts = $presto->connection()->query('select * from posts')->get();
 If set manager as global, just query directly and get data with [collection](https://github.com/tightenco/collect)
 ```php
 $posts = Presto::query('SELECT * FROM posts')->get();
-var_dump($posts->toArray()); // [[1, 'Good pracetice'], [2, 'Make code cleaner']]
+
+var_dump($posts->toArray()); 
+// [[1, 'Good pracetice'], [2, 'Make code cleaner']]
+
 
 $posts = Presto::query('SELECT * FROM posts')->getAssoc();
-var_dump($posts->toArray()); // [['id' => 1, 'title' => 'Good pracetice'], ['id' => 2, 'title' => 'Make code cleaner']]
+
+var_dump($posts->toArray()); 
+// [['id' => 1, 'title' => 'Good pracetice'], ['id' => 2, 'title' => 'Make code cleaner']]
 ```
 
 ## Usage
