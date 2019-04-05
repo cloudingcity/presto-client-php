@@ -44,8 +44,8 @@ class Presto
     /**
      * Register a connection.
      *
-     * @param  array   $config
-     * @param  string  $name
+     * @param  array  $config
+     * @param  string $name
      * @return void
      */
     public function addConnection(array $config, $name = 'default')
@@ -64,8 +64,8 @@ class Presto
     /**
      * Get a fluent query builder instance.
      *
-     * @param  string  $query
-     * @param  string  $connection
+     * @param  string $query
+     * @param  string $connection
      * @return \Clouding\Presto\QueryBuilder
      */
     public static function query($query, $connection = null): QueryBuilder
@@ -76,7 +76,7 @@ class Presto
     /**
      * Get connection instance from manager.
      *
-     * @param  string|null  $connection
+     * @param  string|null $connection
      * @return \Clouding\Presto\Connection\Connection
      */
     public function connection(string $connection = null): Connection

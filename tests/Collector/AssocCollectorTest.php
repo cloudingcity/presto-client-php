@@ -39,7 +39,7 @@ class AssocCollectorTest extends TestCase
     public function testCollectNothing()
     {
         $collector = new AssocCollector();
-        $collector->collect((object)['apple']);
+        $collector->collect((object) ['apple']);
 
         $this->assertEmpty($collector->get()->toArray());
     }

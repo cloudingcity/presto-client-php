@@ -12,7 +12,7 @@ trait QueryTrait
     /**
      * Begin a fluent query against a raw query.
      *
-     * @param  string  $query
+     * @param  string $query
      * @return \Clouding\Presto\QueryBuilder
      */
     public function query(string $query): QueryBuilder
@@ -23,7 +23,7 @@ trait QueryTrait
     /**
      * Get query builder with processor.
      *
-     * @param  \Clouding\Presto\Processor|null  $processor
+     * @param  \Clouding\Presto\Processor|null $processor
      * @return \Clouding\Presto\QueryBuilder
      */
     protected function getBuilder(Processor $processor = null): QueryBuilder
