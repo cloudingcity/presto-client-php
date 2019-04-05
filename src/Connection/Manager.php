@@ -60,9 +60,7 @@ class Manager
             throw new ConnectionNotFoundException("Connection not found: [$name]");
         }
 
-        $this->connections[$name] = new Connection($this->container[$name]);
-
-        return $this->connections[$name];
+        return $this->connections[$name] = new Connection($this->container[$name]);
     }
 
     /**
