@@ -44,11 +44,9 @@ Get a default connection and send query
 $posts = $presto->connection()->query('select * from posts')->get();
 ```
 
-If set manager as global, just query directly and get data with [collection](https://github.com/tightenco/collect)
+If set manager as global, just query directly and get data
 ```php
 $posts = Presto::query('SELECT * FROM posts')->get();
-$posts->toArray(); 
-
 /* 
     [
         [1, 'Good pracetice'],
@@ -57,8 +55,6 @@ $posts->toArray();
 */
 
 $posts = Presto::query('SELECT * FROM posts')->getAssoc();
-$posts->toArray(); 
-
 /* 
     [
         ['id' => 1, 'title' => 'Good pracetice'],
