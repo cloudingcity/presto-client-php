@@ -38,7 +38,7 @@ class Container implements ArrayAccess
     /**
      * Determine if a given offset exists.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return bool
      */
     public function offsetExists($key): bool
@@ -49,7 +49,7 @@ class Container implements ArrayAccess
     /**
      * Get the value at a given offset.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return mixed
      */
     public function offsetGet($key)
@@ -60,8 +60,8 @@ class Container implements ArrayAccess
     /**
      * Set the value at a given offset.
      *
-     * @param  string  $key
-     * @param  mixed   $value
+     * @param  string $key
+     * @param  mixed  $value
      */
     public function offsetSet($key, $value)
     {
@@ -71,7 +71,7 @@ class Container implements ArrayAccess
     /**
      * Unset the value at a given offset.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return void
      */
     public function offsetUnset($key)
@@ -82,7 +82,7 @@ class Container implements ArrayAccess
     /**
      * Dynamically access container items.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return mixed
      */
     public function __get($key)
@@ -93,8 +93,8 @@ class Container implements ArrayAccess
     /**
      * Dynamically set container items.
      *
-     * @param  string  $key
-     * @param  mixed   $value
+     * @param  string $key
+     * @param  mixed  $value
      * @return void
      */
     public function __set($key, $value)

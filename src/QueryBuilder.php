@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Clouding\Presto;
 
 use Clouding\Presto\Collectors\AssocCollector;
-use Clouding\Presto\Collectors\Collector;
-use Tightenco\Collect\Support\Collection;
+use Clouding\Presto\Collectors\BasicCollector;
 
 class QueryBuilder
 {
@@ -37,7 +36,7 @@ class QueryBuilder
     /**
      * Set raw query.
      *
-     * @param  string  $query
+     * @param  string $query
      * @return \Clouding\Presto\QueryBuilder
      */
     public function raw(string $query): QueryBuilder
@@ -50,19 +49,19 @@ class QueryBuilder
     /**
      * Execute the query statement.
      *
-     * @return \Tightenco\Collect\Support\Collection
+     * @return array
      */
-    public function get(): Collection
+    public function get(): array
     {
-        return $this->processor->execute($this->toSql(), new Collector());
+        return $this->processor->execute($this->toSql(), new BasicCollector());
     }
 
     /**
      * Execute the query statement with assoc column.
      *
-     * @return \Tightenco\Collect\Support\Collection
+     * @return array
      */
-    public function getAssoc(): Collection
+    public function getAssoc(): array
     {
         return $this->processor->execute($this->toSql(), new AssocCollector());
     }

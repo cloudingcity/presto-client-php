@@ -4,51 +4,50 @@ declare(strict_types=1);
 
 namespace Clouding\Presto\Collectors;
 
-use Clouding\Presto\Contracts\Collectorable;
-use Tightenco\Collect\Support\Collection;
-
 class AssocCollector implements Collectorable
 {
     /**
-     * The collection of collect data.
+     * The array of collect data.
      *
-     * @var \Tightenco\Collect\Support\Collection
+     * @var array
      */
-    protected $collection;
+    protected $collection = [];
 
     /**
-     * Create a new collector instance.
-     */
-    public function __construct()
-    {
-        $this->collection = new Collection();
-    }
-
-    /**
-     * Collect needs data from object
+     * Collect data from presto response.
      *
-     * @param object $object
+     * @param object $response
      */
-    public function collect(object $object)
+    public function collect(object $response)
     {
-        if (!isset($object->data, $object->columns)) {
+        if (!isset($response->data, $response->columns)) {
             return;
         }
 
-        $columns = (new Collection($object->columns))->pluck('name');
-        $data = (new Collection($object->data))->map(function (array $row) use ($columns) {
-            return $columns->combine($row)->toArray();
-        });
+        $this->collection = array_merge($this->collection, $this->getAssocData($response));
+    }
 
-        $this->collection = $this->collection->merge($data);
+    /**
+     * Get associated data.
+     *
+     * @param object $response
+     * @return array
+     */
+    protected function getAssocData(object $response): array
+    {
+        $columns = array_column($response->columns, 'name');
+
+        return array_map(function (array $data) use ($columns) {
+            return array_combine($columns, $data);
+        }, $response->data);
     }
 
     /**
      * Get collect data.
      *
-     * @return \Tightenco\Collect\Support\Collection
+     * @return array
      */
-    public function get(): Collection
+    public function get(): array
     {
         return $this->collection;
     }

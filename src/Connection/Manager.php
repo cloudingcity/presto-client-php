@@ -47,7 +47,7 @@ class Manager
     /**
      * Make a connection.
      *
-     * @param  string  $name
+     * @param  string $name
      * @return \Clouding\Presto\Connection\Connection
      */
     protected function makeConnection(string $name): Connection

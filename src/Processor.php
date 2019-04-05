@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace Clouding\Presto;
 
+use Clouding\Presto\Collectors\Collectorable;
 use Clouding\Presto\Connection\Connection;
-use Clouding\Presto\Contracts\Collectorable;
-use Clouding\Presto\Contracts\PrestoState;
 use Clouding\Presto\Exceptions\PrestoException;
 use GuzzleHttp\Client;
-use Psr\Http\Message\ResponseInterface;
-use Tightenco\Collect\Support\Collection;
 
 class Processor
 {
@@ -47,20 +44,20 @@ class Processor
      *
      * @var ?string
      */
-    protected $nextUri = '';
+    protected $nextUri = null;
 
     /**
      * Collect response data.
      *
-     * @var \Clouding\Presto\Contracts\Collectorable
+     * @var \Clouding\Presto\Collectors\Collectorable
      */
     protected $collector;
 
     /**
      * Create a new instance.
      *
-     * @param \Clouding\Presto\Connection\Connection  $connection
-     * @param \GuzzleHttp\Client|null                 $client
+     * @param \Clouding\Presto\Connection\Connection $connection
+     * @param \GuzzleHttp\Client|null                $client
      */
     public function __construct(Connection $connection, Client $client = null)
     {
@@ -69,20 +66,20 @@ class Processor
     }
 
     /**
-     * Handle connection query.
+     * Execute connection query.
      *
-     * @param  string                                    $query
-     * @param  \Clouding\Presto\Contracts\Collectorable  $collector
-     * @return \Tightenco\Collect\Support\Collection
+     * @param  string                                   $query
+     * @param \Clouding\Presto\Collectors\Collectorable $collector
+     * @return array
      */
-    public function execute(string $query, Collectorable $collector): Collection
+    public function execute(string $query, Collectorable $collector): array
     {
         $this->collector = $collector;
 
         $this->resolve($this->sendQuery($query));
 
-        while ($this->continue()) {
-            $this->resolve($this->sendNext());
+        while ($this->hasNextUri()) {
+            $this->resolve($this->sendNextUri());
         }
 
         return $this->collector->get();
@@ -91,10 +88,10 @@ class Processor
     /**
      * Send query request.
      *
-     * @param  string  $query
-     * @return \Psr\Http\Message\ResponseInterface
+     * @param  string $query
+     * @return object
      */
-    protected function sendQuery(string $query): ResponseInterface
+    protected function sendQuery(string $query): object
     {
         $baseUri = $this->connection->getHost() . static::STATEMENT_URI;
         $headers = [
@@ -103,46 +100,48 @@ class Processor
             'X-Presto-Catalog' => $this->connection->getCatalog(),
         ];
 
-        return $this->client->post($baseUri, ['headers' => $headers, 'body' => $query]);
+        $response = $this->client->post($baseUri, ['headers' => $headers, 'body' => $query]);
+
+        return json_decode((string) $response->getBody());
     }
 
     /**
      * Send next query.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return object
      */
-    protected function sendNext(): ResponseInterface
+    protected function sendNextUri(): object
     {
-        return $this->client->get($this->nextUri);
+        $response = $this->client->get($this->nextUri);
+
+        return json_decode((string) $response->getBody());
     }
 
     /**
      * Resolve response.
      *
-     * @param \Psr\Http\Message\ResponseInterface $response
+     * @param object $response
      */
-    protected function resolve(ResponseInterface $response)
+    protected function resolve(object $response)
     {
-        $contents = json_decode($response->getBody()->getContents());
+        $this->checkState($response);
 
-        $this->checkState($contents);
+        $this->setNextUri($response);
 
-        $this->setNextUri($contents);
-
-        $this->collector->collect($contents);
+        $this->collector->collect($response);
     }
 
     /**
      * Check response state.
      *
-     * @param  object  $contents
+     * @param  object $response
      *
      * @throws \Clouding\Presto\Exceptions\PrestoException
      */
-    protected function checkState(object $contents)
+    protected function checkState(object $response)
     {
-        if ($contents->stats->state === PrestoState::FAILED) {
-            $message = "{$contents->error->errorName}: {$contents->error->message}";
+        if ($response->stats->state === PrestoState::FAILED) {
+            $message = "{$response->error->errorName}: {$response->error->message}";
             throw new PrestoException($message);
         }
     }
@@ -150,11 +149,11 @@ class Processor
     /**
      * Set next uri.
      *
-     * @param  object  $contents
+     * @param  object $response
      */
-    protected function setNextUri(object $contents)
+    protected function setNextUri(object $response)
     {
-        $this->nextUri = $contents->nextUri ?? null;
+        $this->nextUri = $response->nextUri ?? null;
     }
 
     /**
@@ -162,7 +161,7 @@ class Processor
      *
      * @return bool
      */
-    protected function continue(): bool
+    protected function hasNextUri(): bool
     {
         return isset($this->nextUri);
     }
