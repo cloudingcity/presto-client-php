@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Clouding\Presto\Contracts;
+namespace Clouding\Presto;
 
-interface PrestoState
+class PrestoState
 {
     /**
      * Query has been accepted and is awaiting execution.

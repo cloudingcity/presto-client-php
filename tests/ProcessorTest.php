@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace Clouding\Presto\Tests;
 
 use BlastCloud\Guzzler\UsesGuzzler;
+use Clouding\Presto\Collectors\Collectorable;
 use Clouding\Presto\Connection\Connection;
-use Clouding\Presto\Contracts\Collectorable;
-use Clouding\Presto\Contracts\PrestoState;
+use Clouding\Presto\PrestoState;
 use Clouding\Presto\Exceptions\PrestoException;
 use Clouding\Presto\Processor;
 use GuzzleHttp\Psr7\Response;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
-use Tightenco\Collect\Support\Collection;
 
 class ProcessorTest extends TestCase
 {
@@ -41,7 +40,7 @@ class ProcessorTest extends TestCase
 
 
         $this->expectException(PrestoException::class);
-        $this->expectExceptionMessage("{$response['error']['errorName']}: {$response['error']['message']}");
+        $this->expectExceptionMessage("This is a error name: This is a error message");
 
         $processor = new Processor($connection, $this->guzzler->getClient());
         $processor->execute('Go to school', $collector);
@@ -54,14 +53,12 @@ class ProcessorTest extends TestCase
         $responses = [
             [
                 'nextUri' => 'http://example.com/1',
-                'data' => [1, 2, 3],
                 'stats' => [
                     'state' => 'xxx'
                 ],
             ],
             [
                 'nextUri' => 'http://example.com/2',
-                'data' => [1, 2, 3],
                 'stats' => [
                     'state' => 'xxx'
                 ],
@@ -82,17 +79,12 @@ class ProcessorTest extends TestCase
         $collector->shouldReceive('collect')
             ->times(3);
         $collector->shouldReceive('get')
-            ->once()
-            ->andReturn(collect([1, 2, 3, 1, 2, 3]));
+            ->once();
 
 
         $processor = new Processor($connection, $this->guzzler->getClient());
-        $data = $processor->execute('Query String', $collector);
+        $processor->execute('Query String', $collector);
 
-        $this->assertInstanceOf(Collection::class, $data);
-        $this->assertSame([1, 2, 3, 1, 2, 3], $data->toArray());
-
-        // Test http request
         $this->guzzler->assertHistoryCount(3);
         $this->guzzler->expects($this->once())
             ->post('http://presto.abc' . Processor::STATEMENT_URI)

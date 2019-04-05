@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Clouding\Presto\Tests;
 
 use Clouding\Presto\Collectors\AssocCollector;
-use Clouding\Presto\Collectors\Collector;
+use Clouding\Presto\Collectors\BasicCollector;
 use Clouding\Presto\Processor;
 use Clouding\Presto\QueryBuilder;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
-use Tightenco\Collect\Support\Collection;
 
 class QueryBuilderTest extends TestCase
 {
@@ -31,14 +30,13 @@ class QueryBuilderTest extends TestCase
         $processor = mock(Processor::class);
         $processor->shouldReceive('execute')
             ->once()
-            ->with('', Collector::class)
-            ->andReturn(collect([1, 2, 3]));
+            ->with('', BasicCollector::class)
+            ->andReturn([1, 2, 3]);
 
         $builder = new QueryBuilder($processor);
         $rows = $builder->get();
 
-        $this->assertInstanceOf(Collection::class, $rows);
-        $this->assertEquals([1, 2, 3], $rows->toArray());
+        $this->assertEquals([1, 2, 3], $rows);
     }
 
     public function testGetAssoc()
@@ -47,12 +45,11 @@ class QueryBuilderTest extends TestCase
         $processor->shouldReceive('execute')
             ->once()
             ->with('', AssocCollector::class)
-            ->andReturn(collect([1, 2, 3]));
+            ->andReturn([1, 2, 3]);
 
         $builder = new QueryBuilder($processor);
         $rows = $builder->getAssoc();
 
-        $this->assertInstanceOf(Collection::class, $rows);
-        $this->assertEquals([1, 2, 3], $rows->toArray());
+        $this->assertEquals([1, 2, 3], $rows);
     }
 }
