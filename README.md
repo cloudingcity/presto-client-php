@@ -25,6 +25,8 @@ composer require clouding/presto-client-php
 
 Create a presto manager
 ```php
+<?php
+
 use Clouding\Presto\Presto;
 
 $presto = new Presto();
@@ -41,11 +43,15 @@ $presto->setAsGlobal();
 
 Get a default connection and send query
 ```php
+<?php
+
 $posts = $presto->connection()->query('select * from posts')->get();
 ```
 
 If set manager as global, just query directly and get data
 ```php
+<?php
+
 $posts = Presto::query('SELECT * FROM posts')->get();
 /* 
     [
@@ -68,6 +74,8 @@ $posts = Presto::query('SELECT * FROM posts')->getAssoc();
 ### Multiple connections
 
 ```php
+<?php
+
 use Clouding\Presto\Presto;
 
 $presto = new Presto();
