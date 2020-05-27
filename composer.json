@@ -45,6 +45,6 @@
         ],
         "phpunit": "phpunit --verbose",
         "phpcs": "phpcs -p",
-        "phpstan": "phpstan analyse --configuration phpstan.neon --level 4 src tests --ansi"
+        "phpstan": "phpstan analyse --configuration phpstan.neon --level 2 src tests --ansi"
     }
 }
